@@ -3,7 +3,7 @@ RM = rm -f
 AR = ar rcs
 CREATE_SO = g++ -shared
 CXX = g++
-CXXFLAGS = -fPIC -Wall -g -DNDEBUG 
+CXXFLAGS = -fPIC -Wall -g -DNDEBUG -fvisibility=hidden
 INCLUDES = 
 LDFLAGS = 
 LDPATH =
