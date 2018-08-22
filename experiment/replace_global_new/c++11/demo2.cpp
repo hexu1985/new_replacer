@@ -74,8 +74,7 @@ void *operator new [](std::size_t size)
 			return pReturn;
 		}
 
-		new_handler globalhandler = set_new_handler(0);	// 找到新的new_handler
-		set_new_handler(globalhandler);
+		new_handler globalhandler = get_new_handler();	// 找到新的new_handler
 
 		if (globalhandler) {
 			printf("call new_handler...\n");
