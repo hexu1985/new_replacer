@@ -14,6 +14,9 @@ allocate_func_ptr get_global_allocate_func();
 deallocate_func_ptr set_global_deallocate_func(deallocate_func_ptr deallocate_func);
 deallocate_func_ptr get_global_deallocate_func();
 
+void *operator_new_universal(size_t size);
+void operator_delete_universal(void *ptr);
+
 }   // extern "C"
 
 #endif

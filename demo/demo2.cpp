@@ -10,8 +10,22 @@ char *gPool = NULL;
 
 void my_new_handler();
 
+void *my_allocate_func(size_t size) 
+{
+	printf("my operator new\n");
+    return malloc(size);
+}
+
+void my_deallocate_func(void *p)
+{
+	printf("my operator delete\n");
+	return free(p);
+}
+
 int main()
 {
+    allocate_func_ptr old_allocate_func = set_global_allocate_func(my_allocate_func);
+    deallocate_func_ptr old_deallocate_func = set_global_deallocate_func(my_deallocate_func);
     new_handler old_new_handler = set_new_handler(my_new_handler);
 
 	gPool = new char[100*1024*1024];
@@ -28,6 +42,8 @@ int main()
 
 	printf("Done.\n");
 
+    set_global_allocate_func(old_allocate_func);
+    set_global_deallocate_func(old_deallocate_func); 
     set_new_handler(old_new_handler);
 
 	return 0;

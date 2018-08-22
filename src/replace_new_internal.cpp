@@ -6,30 +6,11 @@ namespace {
 
 void *std_allocate_func(size_t size) 
 {
-	void *pReturn = NULL;
-	if (size == 0)
-		size =1;	// 至少分配1字节
-
-	while (1) {
-		pReturn = malloc(size);
-		if (pReturn != NULL) {
-			return pReturn;
-		}
-
-        std::new_handler globalhandler = std::get_new_handler();	// 找到新的new_handler
-
-		if (globalhandler) {
-			(*globalhandler)();	// 如果内存不足了, 就调用new_handler
-		} else {
-			return NULL;
-		}
-	}
+    return malloc(size);
 }
 
 void std_deallocate_func(void *ptr)
 {
-    if (ptr == NULL)
-        return;
     free(ptr);
 }
 
@@ -62,3 +43,33 @@ deallocate_func_ptr get_global_deallocate_func()
     return global_deallocate_func; 
 }
 
+void *operator_new_universal(size_t size) 
+{
+    allocate_func_ptr allocate_func = get_global_allocate_func();
+	void *pReturn = NULL;
+	if (size == 0)
+		size =1;	// 至少分配1字节
+
+	while (1) {
+		pReturn = allocate_func(size);
+		if (pReturn != NULL) {
+			return pReturn;
+		}
+
+        std::new_handler globalhandler = std::get_new_handler();	// 找到新的new_handler
+
+		if (globalhandler) {
+			(*globalhandler)();	// 如果内存不足了, 就调用new_handler
+		} else {
+			return NULL;
+		}
+	}
+}
+
+void operator_delete_universal(void *ptr)
+{
+    if (ptr == NULL)
+        return;
+    deallocate_func_ptr deallocate_func = get_global_deallocate_func();
+    deallocate_func(ptr);
+}
